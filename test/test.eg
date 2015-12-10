@@ -1,0 +1,61 @@
+
+require-macros:
+   earl-mocha ->
+      describe, it
+      before, after, before-each, after-each
+      assert, asserts
+      expect-error
+      xdescribe, xit
+
+require:
+   ../src -> parse
+
+
+text = """
+name,age
+alice,30
+bob,65
+"""
+
+text2 = "name+age~alice+30~bob+65"
+
+text3 = """
+name, age
+alice, 30
+bob, 65
+"""
+
+text-result = {{name = "alice", age = "30"}
+               {name = "bob", age = "65"}}
+
+text-longer = """
+name,age,job
+alice,30,accountant
+bob,65,baker
+"""
+
+text-quoted = '''
+name,line
+john,"I like babies"
+harold,"I cannot believe you said ""I like babies"""
+caroline,"Yes this is
+strange"
+'''
+
+
+describe "quaint-csv":
+
+   describe "csv":
+      asserts:
+         parse{text} == text-result
+         parse{text2, separator = "+", line-separator = "~"} == text-result
+         parse{text3} != text-result
+         parse{text3, trim = true} == text-result
+         parse{text-longer} ==
+            {{name = "alice", age = "30", job = "accountant"}
+             {name = "bob", age = "65", job = "baker"}}
+         parse{text-quoted} ==
+            {{name = "john", line = "I like babies"}
+             {name = "harold", line = 'I cannot believe you said "I like babies"'}
+             {name = "caroline", line = "Yes this is\nstrange"}}
+

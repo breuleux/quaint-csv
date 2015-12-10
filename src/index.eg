@@ -1,0 +1,77 @@
+
+require:
+   regexp-quote as rxq
+
+provide:
+   Parser
+   parse
+
+class Parser:
+
+   constructor{@options} =
+      @options as {
+         separator => @separator = ","
+         line-separator => @line-separator = "\n"
+         quote => @quote = '"'
+         use-header => @use-header = true
+         trim => @trim = false
+      }
+      if @quote.length > 1 or @separator.length > 1 or @line-separator.length > 1:
+         throw E.csv-options with
+            "quote, separator and line-separator must be single characters"
+      rxq! q = @quote
+      rxq! s = @separator
+      rxq! l = @line-separator
+      @rxp = new RegExp{'{q}((?:[^{q}]|{q}{q})*){q}|({s})|({l})|([^{s}{l}]+)', 'g'}
+      @rxpq = new RegExp{'{q}{q}', 'g'}
+
+   parse{text} =
+      var current = {}
+      rows = {}
+      while true:
+         match @rxp.exec{text}:
+            {_, String? q, _, _, _} ->
+               current.push with q.replace{@rxpq, @quote}
+            {_, _, String? s, _, _} ->
+               pass
+            {_, _, _, String? l, _} ->
+               rows.push with current
+               current = {}
+            {_, _, _, _, String? r} ->
+               current.push with if{@trim, r.trim{}, r}
+            else ->
+               break
+      rows.push with current
+      clean = rows each row when row.length !== 0 -> row
+      if @use-header:
+         let {head, *rows} = clean
+         rows each row -> object with zip{head, row}
+      else:
+         clean
+
+default-parse = p.parse.bind{p} where p = Parser{}
+
+parse{text, options = null} =
+   if options:
+      Parser{options}.parse{text}
+   else:
+      default-parse{text}
+
+
+install{@, options} =
+   let parse = p.parse.bind{p} where p = Parser{options}
+   ext = options.extension or .csv
+   @macros.format.parsers[ext]{contents} =
+      parse{contents}
+   @macros.data.extensions[ext]{engine, file, contents} =
+      parse{contents}
+
+
+main{*match} =
+   {@, options = {=}} when @is-quaint-engine ->
+      install{@, options}
+   {options = {=}} ->
+      {@} -> main{@, options}
+
+provide = main
+

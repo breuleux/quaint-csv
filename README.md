@@ -32,8 +32,8 @@ each {rows} row ::
   * {row.Name}'s job is {row.Job}
 
 ;; output:
-;; Alice's job is accountant
-;; Bob's job is baker
+;; * Alice's job is accountant
+;; * Bob's job is baker
 ```
 
 Using `data` from a file:

@@ -12,7 +12,9 @@
   "license": "MIT",
   "main": "./lib/index.js",
   "dependencies": {
+    "chalk": "^1.1.1",
     "earlgrey-runtime": ">=0.0.11",
+    "inquirer-promise": "0.0.3",
     "regexp-quote": "0.0.0"
   },
   "devDependencies": {

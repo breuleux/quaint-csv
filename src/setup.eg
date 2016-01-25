@@ -1,0 +1,38 @@
+
+require:
+   inquirer-promise as inq
+   chalk
+
+
+async quaint-setup{config, instructions} =
+   url = "https://github.com/breuleux/quaint-csv"
+   print 'Plugin documentation: {chalk.bold.cyan{url}}'
+
+   data = config.plugins.csv or= {=}
+   table = {n = "\n", t = "\t"}
+   repl{s} = s.replace{R.g"\\(.)", {m, c} -> table[c] or m}
+
+   data &: {
+
+      extension = await inq.input{"CSV file extension:"} with
+         {default = data.extension or "csv"}
+
+      repl! record-separator = await inq.input{"Record separator:"} with
+         {default = [data.record-separator or "\n"].replace{"\n", "\\n"}}
+
+      repl! field-separator = await inq.input{"Field separator:"} with
+         {default = data.field-separator or ","}
+
+      repl! quote = await inq.input{"Quote character:"} with
+         {default = data.quote or '"'}
+
+      trim = await inq.confirm{"Should whitespace be trimmed around fields?"} with
+         {default = data.trim or false}
+
+      use-header = await inq.confirm{"Does the first record contain the column names?"} with
+         {default = if{undefined? data.use-header, true, data.use-header}}
+
+   }
+
+
+provide = quaint-setup

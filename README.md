@@ -2,31 +2,30 @@
 quaint-csv
 ==========
 
-CSV support for the `data` and `format` macros in
+CSV support for the `data` macro in
 [Quaint](http://breuleux.github.io/quaint).
 
-```quaint
-plugins :: csv
 
-format csv:table ::
-  Name,Job
-  Alice,accountant
-  Bob,baker
+## Install
+
+    quaint --setup csv
+
+
+
+## Usage
+
+```quaint
+format table ::
+  data csv ::
+    Name,Job
+    Alice,accountant
+    Bob,baker
 ```
 
 Importing from a file:
 
 ```quaint
-format kek.csv:table ::
-```
-
-Using `data`:
-
-```quaint
-rows => data csv ::
-  Name,Job
-  Alice,accountant
-  Bob,baker
+rows => data :: jobs.csv
 
 each {rows} row ::
   * {row.Name}'s job is {row.Job}
@@ -36,13 +35,20 @@ each {rows} row ::
 ;; * Bob's job is baker
 ```
 
-Using `data` from a file:
 
-```quaint
-rows => data :: data.csv
+## Sample configuration
 
-each {rows} row ::
-  * {row.Name}'s job is {row.Job}
+This configuration entry must be added in the `plugins` section of
+`quaint.json`:
+
+```json
+"csv": {
+  "lineSeparator": "\n",
+  "separator": ",",
+  "quote": "\"",
+  "trim": false,
+  "useHeader": true
+}
 ```
 
 
@@ -53,9 +59,11 @@ each {rows} row ::
 
 The separator character for lines/records (default: `\n`)
 
+
 ### separator
 
 The separator character (default: `,`)
+
 
 ### quote
 

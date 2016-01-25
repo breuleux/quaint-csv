@@ -48,7 +48,7 @@ describe "quaint-csv":
    describe "csv":
       asserts:
          parse{text} == text-result
-         parse{text2, separator = "+", line-separator = "~"} == text-result
+         parse{text2, field-separator = "+", record-separator = "~"} == text-result
          parse{text3} != text-result
          parse{text3, trim = true} == text-result
          parse{text-longer} ==

@@ -10,18 +10,18 @@ class Parser:
 
    constructor{@options} =
       @options as {
-         separator => @separator = ","
-         line-separator => @line-separator = "\n"
+         field-separator => @field-separator = ","
+         record-separator => @record-separator = "\n"
          quote => @quote = '"'
          use-header => @use-header = true
          trim => @trim = false
       }
-      if @quote.length > 1 or @separator.length > 1 or @line-separator.length > 1:
+      if @quote.length > 1 or @field-separator.length > 1 or @record-separator.length > 1:
          throw E.csv-options with
-            "quote, separator and line-separator must be single characters"
+            "quote, field-separator and record-separator must be single characters"
       rxq! q = @quote
-      rxq! s = @separator
-      rxq! l = @line-separator
+      rxq! s = @field-separator
+      rxq! l = @record-separator
       @rxp = new RegExp{'{q}((?:[^{q}]|{q}{q})*){q}|({s})|({l})|([^{s}{l}]+)', 'g'}
       @rxpq = new RegExp{'{q}{q}', 'g'}
 

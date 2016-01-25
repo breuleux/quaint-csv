@@ -43,8 +43,8 @@ This configuration entry must be added in the `plugins` section of
 
 ```json
 "csv": {
-  "lineSeparator": "\n",
-  "separator": ",",
+  "recordSeparator": "\n",
+  "fieldSeparator": ",",
   "quote": "\"",
   "trim": false,
   "useHeader": true
@@ -55,14 +55,19 @@ This configuration entry must be added in the `plugins` section of
 ## Options
 
 
-### lineSeparator
+### extension
 
-The separator character for lines/records (default: `\n`)
+The file extension to use for the CSV files. (default: "csv")
 
 
-### separator
+### recordSeparator
 
-The separator character (default: `,`)
+The separator character for records (default: `\n`)
+
+
+### fieldSeparator
+
+The separator character for fields (default: `,`)
 
 
 ### quote

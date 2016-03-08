@@ -1,7 +1,7 @@
 {
   "name": "quaint-csv",
   "description": "Include CSV files in Quaint",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "format": "cjs",
   "repository": {
     "type": "git",

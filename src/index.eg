@@ -28,19 +28,28 @@ class Parser:
    parse{text} =
       var current = {}
       rows = {}
+      var dangling = false
       while true:
          match @rxp.exec{text}:
             {_, String? q, _, _, _} ->
                current.push with q.replace{@rxpq, @quote}
             {_, _, String? s, _, _} ->
-               pass
+               if dangling:
+                  current.push{""}
+               dangling = true
             {_, _, _, String? l, _} ->
+               if dangling:
+                  current.push{""}
+               dangling = false
                rows.push with current
                current = {}
             {_, _, _, _, String? r} ->
+               dangling = false
                current.push with if{@trim, r.trim{}, r}
             else ->
                break
+      if dangling:
+         current.push{""}
       rows.push with current
       clean = rows each row when row.length !== 0 -> row
       if @use-header:

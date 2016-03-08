@@ -42,6 +42,12 @@ caroline,"Yes this is
 strange"
 '''
 
+text-blanks = '''
+name,age,job
+alice,,accountant
+bob,65,
+'''
+
 
 describe "quaint-csv":
 
@@ -58,4 +64,7 @@ describe "quaint-csv":
             {{name = "john", line = "I like babies"}
              {name = "harold", line = 'I cannot believe you said "I like babies"'}
              {name = "caroline", line = "Yes this is\nstrange"}}
+         parse{text-blanks} ==
+            {{name = "alice", age = "", job = "accountant"}
+             {name = "bob", age = "65", job = ""}}
 
